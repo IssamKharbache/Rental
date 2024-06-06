@@ -17,13 +17,12 @@ const LoginModal = () => {
              Error message
               </div>}
               <input type="email" className="w-full h-[54px] px-4 border border-gray-300 rounded-xl focus:outline-none focus:border-2 focus:border-accent " placeholder="Your Email"/>
-              <input type="password" className="w-full h-[54px] px-4 border border-gray-300 rounded-xl focus:outline-none focus:border-2 focus:border-accent " placeholder="********"/>
+              <input type="password" className="w-full h-[54px] px-4 border border-gray-300 rounded-xl focus:outline-none focus:border-2 focus:border-accent " placeholder="Password"/>
               <p className="flex gap-2">Don't have an account ?<span  onClick={()=>{
                 loginModal.close();
                 signupModal.open()
                 }} className="underline text-blue-700 opacity-70 hover:opacity-90 duration-200 cursor-pointer">Sign up</span></p>
-              <CustomButton label="Log in" className="font-semibold text-xl" onClick={()=>console.log("Log in")
-              } />
+              <CustomButton type="submit" label="Log in" className="font-semibold text-xl" />
             </form>
       </>
     )

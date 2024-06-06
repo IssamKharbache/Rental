@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "@/components/navbar/NavBar";
 import LoginModal from "@/components/modals/authentication/LoginModal";
 import SignupModal from "@/components/modals/authentication/SignupModal";
+import { Toaster } from "sonner";
 
 const rubik = Rubik({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         {/* Header */}
         <NavBar />
         <div className="pt-28">
+          <Toaster richColors position="top-center" />
           {children}
         </div>
         <LoginModal />

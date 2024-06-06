@@ -2,28 +2,27 @@
 import { useEffect,useState } from "react";
 
 import PropertyListItem from "./PropertyListItem"
+//utils
+import apiRequests from "@/utils/ApiService";
+//defining the type of the data returned from the api
 export type PropertyType = {
   id:string,
   title:string,
   price_per_night:number,
   image_url:string,
 }
+//
 const PropertyList = () => {
   const [properties,setProperties] = useState<PropertyType[]>([]);
+ //getting properties from backend
   const getProperties = async () =>{
-     const url = 'http://localhost:8000/api/properties/';
+    const propertiesData = await apiRequests.get('/api/properties/')
 
-     await fetch(url,{
-      method: 'GET',
-     }).then(response=>response.json()).then((res)=>{
-      setProperties(res.data);
-     }).catch((error)=>{
-      console.log(error);
-     })
+    setProperties(propertiesData.data)
   }
-
+  //rendering properties when ever the component is rendered
   useEffect(()=>{
-       getProperties();
+      getProperties();
   },[])
   return (
     <>
@@ -34,9 +33,8 @@ const PropertyList = () => {
         )
       })
     }
-    
     </>
   )
 }
 
-export default PropertyList
+export default PropertyList;
