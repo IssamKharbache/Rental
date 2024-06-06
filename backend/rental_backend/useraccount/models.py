@@ -19,12 +19,12 @@ class CustomUserManager(UserManager):
     def create_user(self, name=None, email=None, password=None, **extra_fields):
          extra_fields.setdefault('is_staff',False)
          extra_fields.setdefault('is_superuser',False)
-         return self.create_user(name,email,password,**extra_fields)
+         return self._create_user(name,email,password,**extra_fields)
      #overriding create super user function
     def create_superuser(self,name=None, email=None, password=None, **extra_fields):
          extra_fields.setdefault('is_staff',True)
          extra_fields.setdefault('is_superuser',True)
-         return self.create_user(name,email,password,**extra_fields)
+         return self._create_user(name,email,password,**extra_fields)
      
      
     
