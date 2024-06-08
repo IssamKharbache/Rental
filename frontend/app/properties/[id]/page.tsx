@@ -1,27 +1,34 @@
 import ReservationSideBar from "@/components/properties/ReservationSideBar"
 import Image from "next/image"
-
-const PropertyDetailPage = () => {
+import apiRequests from "@/utils/ApiService"
+const PropertyDetailPage = async ({params}:{params:{id:string}}) => {
+  const property = await apiRequests.get(`/api/properties/${params.id}`)
+  const propertyDetail = property.data;
   return (
     <main className="max-w-[1500px] mx-auto px-6 mt-4 pb-6">
       <div className="w-full h-[64vh] overflow-hidden rounded-xl relative">
-      <Image fill src="/estate/first.png" className="object-cover w-full h-full" alt="Vill" />
+      <Image fill src={propertyDetail.image_url} quality={80} className="object-cover w-full h-full" alt="Vill" />
       </div>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-5 gap-4">
         {/* Property details */}
         <div className="py-6 pr-6 col-span-3">
-         <h1 className="mb-4 text-4xl">Property name</h1>
-         <span className="mb-6 block text-lg text-gray-600">5 Guests- 2 Bedrooms - 1 Bathroom</span>
+         <h1 className="mb-4 text-4xl">{propertyDetail.title}</h1>
+         <span className="mb-6 block text-lg text-gray-600">{propertyDetail.guests} Guests- {propertyDetail.bedrooms} Bedrooms - {propertyDetail.bathrooms} Bathroom</span>
          <hr/>
          <div className="py-6 flex items-center space-x-4">
-          <Image src="/profilepic.jpg" alt="Profile picture" width={1500} height={1500} className="rounded-full object-cover w-12 h-12" />
-          <p><strong>Estrella </strong>is your host</p>
+          {
+            propertyDetail.landhost.avatar_url && (
+              <Image src={propertyDetail.landhost.avatar_url} alt="Profile picture" width={1500} height={1500} className="rounded-full object-cover w-12 h-12" />
+            )
+          }
+         
+          <p><strong>{propertyDetail.landhost.name}</strong> is your host</p>
          </div>
          <hr />
-         <p className="mt-6 text-lg"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis, blanditiis nulla quod excepturi incidunt quo dolore suscipit, earum reprehenderit hic sequi! Vitae reprehenderit natus mollitia hic quaerat molestias nemo rerum?</p>
+         <p className="mt-6 text-lg">{propertyDetail.description}</p>
         </div>
         {/* RESERVATION */}
-        <ReservationSideBar />
+        <ReservationSideBar  property={propertyDetail} />
       </div>
     </main>
   )

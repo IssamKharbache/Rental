@@ -7,12 +7,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import apiRequests from "@/utils/ApiService";
 import { toast } from "sonner";
+import { handleLogin } from "@/utils/actions";
 
 const SignupModal = () => {
     //initializing router 
     const router =  useRouter();
     //states to handle the form
     const [email,setEmail] = useState('');
+    const [name,setName] = useState('');
     const [password1,setPassword1] = useState('');
     const [password2,setPassword2] = useState('');
     const [formError,setFormError] = useState<string[]>([]);
@@ -25,17 +27,21 @@ const SignupModal = () => {
     const handleSubmit = async  () =>{
          const formData = {
           email:email,
+          name:name,
           password1:password1,
-          password2:password2
+          password2:password2,
          }
-         const response = await apiRequests.post('/api/auth/register/',JSON.stringify(formData));
+         const response = await apiRequests.postWithoutToken('/api/auth/register/',JSON.stringify(formData));
          if(response.access){
-           toast.success("User created successfully");
+          setFormError([]);
+          toast.success("User created successfully");
           //handlelogin
+          handleLogin(response.user.pk,response.access,response.refresh)
            signupModal.close();
            //redirecting
           router.push('/');
-          setFormError([]);
+          router.refresh();
+          
          }else{
           //getting the server errors
           const tmpErrors :string[] = Object.values(response).map((error:any)=>{
@@ -53,6 +59,7 @@ const SignupModal = () => {
              {err}
               </div>
             )) }
+            <input type="text" onChange={(e)=>setName(e.target.value)} className="w-full h-[54px] px-4 border border-gray-300 rounded-xl focus:outline-none focus:border-2 focus:border-accent " placeholder="Your full name"/>
               <input type="email" onChange={(e)=>setEmail(e.target.value)} className="w-full h-[54px] px-4 border border-gray-300 rounded-xl focus:outline-none focus:border-2 focus:border-accent " placeholder="Your Email"/>
               <input type="password" onChange={(e)=>setPassword1(e.target.value)} className="w-full h-[54px] px-4 border border-gray-300 rounded-xl focus:outline-none focus:border-2 focus:border-accent " placeholder="Password"/>
               <input type="password" onChange={(e)=>setPassword2(e.target.value)} className="w-full h-[54px] px-4 border border-gray-300 rounded-xl focus:outline-none focus:border-2 focus:border-accent " placeholder="Repeat Password"/>

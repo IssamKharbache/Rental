@@ -10,10 +10,14 @@ import { CgClose } from "react-icons/cg";
 import MenuLink from "./MenuLink";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useSignupModal from "@/app/hooks/useSignupModal";
+import LogoutButton from "../Logout";
 
 
+interface UserNavProps {
+  userId?:string | null;
+}
 
-const UserNav = () => {
+const UserNav:React.FC<UserNavProps> = ({userId}) => {
   const [isMenuOpen,setIsMenuOpen] = useState(false);
   const loginModal = useLoginModal();
   const signupModal = useSignupModal();
@@ -26,19 +30,22 @@ const UserNav = () => {
         </button>
       }
      {
-      isMenuOpen && (
+      isMenuOpen &&  (
         <div className="w-[220px] absolute top-[60px] right-0 bg-white border rounded-md shadow-md flex flex-col cursor-pointer">
-              <MenuLink label="Log in" onClick={
-                ()=>{
-                  loginModal.open();
-                  setIsMenuOpen(false);
-                }
-              } />
-              <MenuLink label="Sign up" onClick={()=>{
-                  signupModal.open();
-                  setIsMenuOpen(false);
-                }
-              }  />
+          {userId ? <LogoutButton /> :
+          <>
+      <MenuLink label="Log in" onClick={
+              ()=>{
+                loginModal.open();
+                setIsMenuOpen(false);
+              }
+            } />
+            <MenuLink label="Sign up" onClick={()=>{
+                signupModal.open();
+                setIsMenuOpen(false);
+              }
+            }  />
+          </>}
         </div>
       )
      }

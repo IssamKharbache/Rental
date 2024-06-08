@@ -4,6 +4,7 @@ import { useEffect,useState } from "react";
 import PropertyListItem from "./PropertyListItem"
 //utils
 import apiRequests from "@/utils/ApiService";
+import { useRouter } from "next/navigation";
 //defining the type of the data returned from the api
 export type PropertyType = {
   id:string,
@@ -14,6 +15,7 @@ export type PropertyType = {
 //
 const PropertyList = () => {
   const [properties,setProperties] = useState<PropertyType[]>([]);
+ 
  //getting properties from backend
   const getProperties = async () =>{
     const propertiesData = await apiRequests.get('/api/properties/')

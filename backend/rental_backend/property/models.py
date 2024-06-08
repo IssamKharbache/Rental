@@ -18,7 +18,7 @@ class Property(models.Model):
      category = models.CharField(max_length=255)
      #favorited
      image = models.ImageField(upload_to='uploads/properties')
-     landHost = models.ForeignKey(User,related_name='properties',on_delete=models.CASCADE)
+     landhost = models.ForeignKey(User,related_name='properties',on_delete=models.CASCADE)
      create_at = models.DateTimeField(auto_now_add=True)
      
      
