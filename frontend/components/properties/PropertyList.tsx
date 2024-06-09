@@ -1,5 +1,5 @@
 'use client';
-import { useEffect,useState } from "react";
+import React, { useEffect,useState } from "react";
 
 import PropertyListItem from "./PropertyListItem"
 //utils
@@ -13,12 +13,20 @@ export type PropertyType = {
   image_url:string,
 }
 //
-const PropertyList = () => {
+
+interface PropertyListProps {
+  landhostId?:string | null
+}
+const PropertyList:React.FC<PropertyListProps> = ({landhostId}) => {
   const [properties,setProperties] = useState<PropertyType[]>([]);
  
  //getting properties from backend
   const getProperties = async () =>{
-    const propertiesData = await apiRequests.get('/api/properties/')
+    let url = '/api/properties/'
+    if(landhostId){
+      url +=`?landhostId=${landhostId}`
+    }
+    const propertiesData = await apiRequests.get(url)
 
     setProperties(propertiesData.data)
   }

@@ -107,7 +107,7 @@ const AddPropertyModal = () => {
       ) : currentStep == 2 ? (
         <>
           <h2 className="text-4xl mb-6 text-center  font-semibold">
-            Descripe your place
+            Describe your place
           </h2>
           <div className="pb-6 space-y-4">
             {/* TITLE INPUT */}

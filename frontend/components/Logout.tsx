@@ -2,10 +2,13 @@
 
 import { useRouter } from "next/navigation"
 import MenuLink from "./navbar/MenuLink"
-import { resetAuthCookies } from "@/utils/actions"
+import { resetAuthCookies } from "@/utils/actions";
 
+interface LogoutButtonProps {
+  icon:React.ReactNode;
+}
 
-const LogoutButton:React.FC = () => {
+const LogoutButton:React.FC<LogoutButtonProps> = ({icon}) => {
     //initialising the router
     const router = useRouter()
     const  submitLogout = async ()=>{
@@ -14,7 +17,7 @@ const LogoutButton:React.FC = () => {
     }
   return (
     <div>
-        <MenuLink label="Log out" onClick={submitLogout} />
+        <MenuLink icon={icon} label="Log out" onClick={submitLogout} />
     </div>
   )
 }

@@ -2,10 +2,13 @@ import ReservationSideBar from "@/components/properties/ReservationSideBar"
 import Image from "next/image"
 import apiRequests from "@/utils/ApiService"
 import { getUserId } from "@/utils/actions"
+import Link from "next/link"
 const PropertyDetailPage = async ({params}:{params:{id:string}}) => {
   const property = await apiRequests.get(`/api/properties/${params.id}`)
   const propertyDetail = property.data;
   const userId = await getUserId();
+
+  
   return (
     <main className="max-w-[1500px] mx-auto px-6 mt-4 pb-6">
       <div className="w-full h-[64vh] overflow-hidden rounded-xl relative">
@@ -17,7 +20,7 @@ const PropertyDetailPage = async ({params}:{params:{id:string}}) => {
          <h1 className="mb-4 text-4xl">{propertyDetail.title}</h1>
          <span className="mb-6 block text-lg text-gray-600">{propertyDetail.guests} Guests- {propertyDetail.bedrooms} Bedrooms - {propertyDetail.bathrooms} Bathroom</span>
          <hr/>
-         <div className="py-6 flex items-center space-x-4">
+         <Link href={`/landhost/${propertyDetail.landhost.id}`} className="py-6 flex items-center space-x-4">
           {
             propertyDetail.landhost.avatar_url && (
               <Image src={propertyDetail.landhost.avatar_url} alt="Profile picture" width={1500} height={1500} className="rounded-full object-cover w-12 h-12" />
@@ -25,7 +28,7 @@ const PropertyDetailPage = async ({params}:{params:{id:string}}) => {
           }
          
           <p><strong>{propertyDetail.landhost.name}</strong> is your host</p>
-         </div>
+         </Link>
          <hr />
          <p className="mt-6 text-lg">{propertyDetail.description}</p>
         </div>
