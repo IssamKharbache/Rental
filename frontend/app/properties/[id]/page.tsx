@@ -1,9 +1,11 @@
 import ReservationSideBar from "@/components/properties/ReservationSideBar"
 import Image from "next/image"
 import apiRequests from "@/utils/ApiService"
+import { getUserId } from "@/utils/actions"
 const PropertyDetailPage = async ({params}:{params:{id:string}}) => {
   const property = await apiRequests.get(`/api/properties/${params.id}`)
   const propertyDetail = property.data;
+  const userId = await getUserId();
   return (
     <main className="max-w-[1500px] mx-auto px-6 mt-4 pb-6">
       <div className="w-full h-[64vh] overflow-hidden rounded-xl relative">
@@ -28,7 +30,7 @@ const PropertyDetailPage = async ({params}:{params:{id:string}}) => {
          <p className="mt-6 text-lg">{propertyDetail.description}</p>
         </div>
         {/* RESERVATION */}
-        <ReservationSideBar  property={propertyDetail} />
+        <ReservationSideBar userId={userId} property={propertyDetail} />
       </div>
     </main>
   )
