@@ -20,11 +20,11 @@ const LandhostDetailsPage = async ({params}:{params:{id:string}}) => {
               width={2000}
               height={2000}
               alt="landlordpicture"
-              className="rounded-full w-[200px] min-h-[265px] object-cover"
+              className="rounded-full w-[200px] h-[200px] object-cover"
             />
             <h1 className="mt-6 text-2xl">{landhost.name}</h1>
             {
-              userId != params.id &&   <ContactButton />
+              userId != params.id &&   <ContactButton userId={userId} landhostId={params.id} />
             }
           
           </div>

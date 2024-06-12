@@ -18,6 +18,9 @@ import { BsFillHouseHeartFill } from "react-icons/bs";
 import { HiLogin } from "react-icons/hi";
 import { HiLogout } from "react-icons/hi";
 import { FiUserPlus } from "react-icons/fi";
+import { FaRegBuilding } from "react-icons/fa";
+import { FaCalendarAlt } from "react-icons/fa";
+import { AiOutlineMessage } from "react-icons/ai";
 
 interface UserNavProps {
   userId?: string | null;
@@ -51,14 +54,38 @@ const UserNav: React.FC<UserNavProps> = ({ userId }) => {
           {userId ? (
             <>
               <MenuLink
-                icon={<BsFillHouseHeartFill />}
-                label="My properties"
+                icon={<FaRegBuilding  />}
+                label="Properties"
                 onClick={() => {
                   router.push("/myproperties");
                   setIsMenuOpen(false);
                 }}
               />
-              <LogoutButton icon={<HiLogout />}/>
+              <MenuLink
+                icon={<FaCalendarAlt />}
+                label="Reservations"
+                onClick={() => {
+                  router.push("/myreservations");
+                  setIsMenuOpen(false);
+                }}
+              />
+               <MenuLink
+                icon={<BsFillHouseHeartFill />}
+                label="Favorites"
+                onClick={() => {
+                  router.push("/myfavorites");
+                  setIsMenuOpen(false);
+                }}
+              />
+              <MenuLink
+                icon={<AiOutlineMessage size={20} />}
+                label="Inbox"
+                onClick={() => {
+                  router.push("/inbox");
+                  setIsMenuOpen(false);
+                }}
+              />
+              <LogoutButton  icon={<HiLogout />}/>
             </>
           ) : (
             <>

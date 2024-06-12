@@ -3,9 +3,11 @@
 import { useRouter } from "next/navigation"
 import MenuLink from "./navbar/MenuLink"
 import { resetAuthCookies } from "@/utils/actions";
+import { toast } from "sonner";
 
 interface LogoutButtonProps {
   icon:React.ReactNode;
+
 }
 
 const LogoutButton:React.FC<LogoutButtonProps> = ({icon}) => {
@@ -14,6 +16,7 @@ const LogoutButton:React.FC<LogoutButtonProps> = ({icon}) => {
     const  submitLogout = async ()=>{
         resetAuthCookies();
         router.push("/")
+        toast.success("Logged out successfully")
     }
   return (
     <div>

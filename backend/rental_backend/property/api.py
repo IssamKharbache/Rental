@@ -5,31 +5,54 @@ from rest_framework.decorators import api_view,authentication_classes,permission
 from .forms import PropertyForm
 from .models import Property,Reservation
 from .serializers import PropertiesListSerializer,PropertiesDetailSerializer,ReservationsListSerializer
+from useraccount.models import User
+from rest_framework_simplejwt.tokens import AccessToken
 
 #get all properties api
 @api_view(['GET'])
 @authentication_classes([])
 @permission_classes([])
 def properties_list(request):
+    #
+    #Auth
+    try :
+        token = request.META['HTTP_AUTHORIZATION'].split('Bearer ')[1]
+        token = AccessToken(token)
+        user_id = token.payload['user_id']
+        user = User.objects.get(pk=user_id)
+    except Exception as e:
+        user = None
+
+    #
+    #
+    favorites = []
     properties = Property.objects.all()
     landhost_id = request.GET.get('landhostId','')
+    is_favorites = request.GET.get('is_favorites','')
     #filtering properties
     if landhost_id :
         properties = properties.filter(landhost_id=landhost_id)
-    serializer = PropertiesListSerializer(properties,many=True)
-    #
-    return JsonResponse({
-        'data':serializer.data
-    })   
     
-#get property details api    
+    if is_favorites:
+        properties = properties.filter(favorited__in=[user])
+    #favorites properties
+    if user:
+        for property in properties:
+            if user in property.favorited.all():
+               favorites.append(property.id)
+    ##
+    serializer = PropertiesListSerializer(properties,many=True)
+    return JsonResponse({
+        'data':serializer.data,
+        'favorites':favorites
+    })
+#get property details api
 @api_view(['GET'])
 @authentication_classes([])
 @permission_classes([])
-def properties_detail(request,pk): 
+def properties_detail(request,pk):
     property = Property.objects.get(pk=pk)
     serializer = PropertiesDetailSerializer(property,many=False)
-    
     return JsonResponse({
         'data':serializer.data
     })
@@ -89,3 +112,15 @@ def book_property(request,pk):
 
 
 
+#add favorite property
+@api_view(['POST'])
+def toggle_favorite(request,pk):
+    property = Property.objects.get(pk=pk)
+    #REMOVE FROM Favorite
+    if  request.user in property.favorited.all():
+          property.favorited.remove(request.user)
+          return JsonResponse({'is_favorited':False})
+    #ADD TO FAVORITE
+    else:
+        property.favorited.add(request.user)
+        return JsonResponse({'is_favorited':True})

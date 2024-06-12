@@ -16,7 +16,7 @@ export const handleLogin = async (userId:string,accessToken:string,refreshToken:
     cookies().set('session_access_token',accessToken,{
         httpOnly:true,
         secure:process.env.NODE_ENV === 'production' ,
-        maxAge:60 * 60, // 60 minutes
+        maxAge:60 * 60 * 24 * 7, // 60 minutes
         path:'/'
     });
     cookies().set('session_refresh_token',refreshToken,{

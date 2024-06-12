@@ -24,7 +24,7 @@ const LoginModal = () => {
      const res = await apiRequests.postWithoutToken('/api/auth/login/',JSON.stringify(formData))
      if(res.access){
       setFormError([])
-      toast.success("Loggeed in successfully");
+      toast.success("Logged in successfully");
      //handlelogin
       handleLogin(res.user.pk,res.access,res.refresh)
       loginModal.close();

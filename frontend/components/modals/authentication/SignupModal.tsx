@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import apiRequests from "@/utils/ApiService";
 import { toast } from "sonner";
 import { handleLogin } from "@/utils/actions";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const SignupModal = () => {
     //initializing router 
@@ -18,6 +19,7 @@ const SignupModal = () => {
     const [password1,setPassword1] = useState('');
     const [password2,setPassword2] = useState('');
     const [formError,setFormError] = useState<string[]>([]);
+    const [loading,setLoading] = useState(false);
     //modals
     const signupModal = useSignupModal();
     const loginModal = useLoginModal();
@@ -25,6 +27,7 @@ const SignupModal = () => {
     //submit function
 
     const handleSubmit = async  () =>{
+         setLoading(true);
          const formData = {
           email:email,
           name:name,
@@ -35,6 +38,7 @@ const SignupModal = () => {
          if(response.access){
           setFormError([]);
           toast.success("User created successfully");
+          setLoading(false);
           //handlelogin
           handleLogin(response.user.pk,response.access,response.refresh)
            signupModal.close();
@@ -43,8 +47,10 @@ const SignupModal = () => {
           router.refresh();
           
          }else{
+          setLoading(false);
           //getting the server errors
           const tmpErrors :string[] = Object.values(response).map((error:any)=>{
+
             return error
           })
           setFormError(tmpErrors);
@@ -68,8 +74,11 @@ const SignupModal = () => {
                 signupModal.close()
                 }} className="underline text-blue-700 opacity-70 hover:opacity-90 duration-200 cursor-pointer">Log in</span>
                 </p>
-              <CustomButton  type="submit"  label="Sign up" className="font-semibold text-xl"
-               />
+            {
+              loading ?  <CustomButton  type="button"  label="Signing you up please wait..." icon={<LoadingSpinner />} className="font-semibold text-xl opacity-60 pointer-events-none"
+              /> :  <CustomButton  type="submit"  label="Sign up" className="font-semibold text-xl"
+              />
+            }
 
             </form>
       </>
