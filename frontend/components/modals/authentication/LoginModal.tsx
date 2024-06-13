@@ -8,6 +8,7 @@ import apiRequests from "@/utils/ApiService";
 import { handleLogin } from "@/utils/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 const LoginModal = () => {
   const router = useRouter();
   const [formError,setFormError] = useState<string[]>([]);
@@ -15,14 +16,17 @@ const LoginModal = () => {
   const [password,setPassword] = useState('');
   const loginModal = useLoginModal();
   const signupModal = useSignupModal();
+  const [loading,setLoading] = useState(false);
 
   //login function
   const submitLogin = async () =>{
+     setLoading(true);
      const formData = {
       email,password
      }
      const res = await apiRequests.postWithoutToken('/api/auth/login/',JSON.stringify(formData))
      if(res.access){
+      setLoading(false);
       setFormError([])
       toast.success("Logged in successfully");
      //handlelogin
@@ -31,9 +35,11 @@ const LoginModal = () => {
       //redirecting
       router.push('/');
       router.refresh();
+     
     
   }else{
     setFormError(res.non_field_errors)
+    setLoading(false);
   }
 }
   
@@ -54,7 +60,11 @@ const LoginModal = () => {
                 loginModal.close();
                 signupModal.open()
                 }} className="underline text-blue-700 opacity-70 hover:opacity-90 duration-200 cursor-pointer">Sign up</span></p>
-              <CustomButton  type="submit" label="Log in" className="font-semibold text-xl" />
+             
+             {
+              loading ? <CustomButton  type="button"  label="Logging you in please wait..." icon={<LoadingSpinner />} className="font-semibold text-xl opacity-60 pointer-events-none"
+              /> : <CustomButton  type="submit" label="Log in" className="font-semibold text-xl" />
+             }
             </form>
       </>
     )

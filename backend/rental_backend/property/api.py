@@ -23,18 +23,51 @@ def properties_list(request):
     except Exception as e:
         user = None
 
-    #
+    #FILTERS
     #
     favorites = []
     properties = Property.objects.all()
     landhost_id = request.GET.get('landhostId','')
     is_favorites = request.GET.get('is_favorites','')
+    
+    #search filters
+    country = request.GET.get('country','')
+    category = request.GET.get('category','')
+    checkin_date = request.GET.get('checkin','')
+    checkout_date = request.GET.get('checkout','')
+    bedrooms = request.GET.get('bedrooms','')
+    bathrooms = request.GET.get('bathrooms','')
+    guests = request.GET.get('guests','')
+    print(country)
     #filtering properties
     if landhost_id :
         properties = properties.filter(landhost_id=landhost_id)
     
     if is_favorites:
         properties = properties.filter(favorited__in=[user])
+    #filtering by check in and out date
+    if checkin_date and checkout_date:
+        exact_matches = Reservation.objects.filter(start_date=checkin_date) | Reservation.objects.filter(end_date=checkout_date)
+        overlap_matches = Reservation.objects.filter(start_date__lte=checkout_date,end_date__gte=checkin_date)
+        all_matches = []
+        for reservation in exact_matches | overlap_matches :
+                all_matches.append(reservation.property.id)
+        properties = properties.exclude(id__in=all_matches)        
+    #filerting by guests
+    if guests:
+        properties = properties.filter(guests__gte=guests)
+    #filtering by bedrooms
+    if bedrooms:
+        properties = properties.filter(bedrooms__gte=bedrooms )    
+    #filtering by bathrooms
+    if bathrooms:
+        properties = properties.filter(bathrooms__gte=bathrooms)
+    #filtering by country
+    if country:
+        properties = properties.filter(country=country)
+    #filtering by category
+    if category:
+        properties = properties.filter(category=category)            
     #favorites properties
     if user:
         for property in properties:

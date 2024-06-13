@@ -6,6 +6,7 @@ import { ConversationType } from "@/app/inbox/page";
 import useWebSocket, {ReadyState} from "react-use-websocket";
 import { MessageType } from "@/app/inbox/[id]/page";
 import { UserType } from "@/app/inbox/page";
+import Image from "next/image";
 
 interface ConversationDetailProps {
     token: string;
@@ -89,29 +90,39 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
         <>
             <div 
                 ref={messagesDiv}
-                className="max-h-[400px] overflow-auto flex flex-col space-y-4"
+                className="max-h-[750px] overflow-auto flex flex-col space-y-4"
             >
                   {messages.map((message, index) => (
                     <div
                         key={`dbmsg_${index}`}
-                        className={`w-[80%]py-4 px-6 rounded-xl mt-4 ${message.created_by.name == myUser?.name ? 'ml-[20%] bg-blue-200' : 'bg-gray-200'}`}
+                        className={`w-[80%] py-4 px-6 rounded-xl mt-4 ${message.created_by.name == myUser?.name ? 'ml-[20%] bg-accent ' : 'bg-gray-200'}`}
                     >
-                        <p className="font-bold text-gray-500">{message.created_by.name}</p>
+                       <div className="flex items-center  gap-4">
+                       <Image width={500} height={500}  className="w-10 h-10 rounded-full object-cover" src={message.created_by.avatar_url} alt={`${message.created_by.name} Avatar`} />
+                       <div className="">
+                          <p className="font-bold text-gray-500">{message.created_by.name}</p>
                         <p>{message.body}</p>
+                       </div>
+                       </div>
                     </div>
                 ))}
                 {realtimeMessages.map((message, index) => (
                     <div
                         key={index}
-                        className={`w-[80%]py-4 px-6 rounded-xl mt-4 ${message.name == myUser?.name ? 'ml-[20%] bg-blue-200' : 'bg-gray-200'}`}
+                        className={`w-[80%] py-4 px-6 rounded-xl mt-4 ${message.name == myUser?.name ? 'ml-[20%] bg-accent ' : 'bg-gray-200'}`}
                     >
-                        <p className="font-bold text-gray-500">{message.name}</p>
+                       <div className="flex items-center  gap-4">
+                       <Image width={500} height={500}  className="w-10 h-10 rounded-full object-cover" src={message.created_by.avatar_url} alt={`${message.created_by.name} Avatar`} />
+                       <div className="">
+                          <p className="font-bold text-gray-500">{message.created_by.name}</p>
                         <p>{message.body}</p>
+                       </div>
+                       </div>
                     </div>
                 ))}
             </div>
 
-            <div className="mt-4 py-4 px-6 flex border border-gray-300 space-x-4 rounded-xl">
+            <div className="mt-4 py-4 px-6 flex border border-gray-300 space-x-4 rounded-xl ">
                 <input
                     type="text"
                     placeholder="Type your message..."

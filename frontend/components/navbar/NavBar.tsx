@@ -5,6 +5,7 @@ import SearchFilters from './SearchFilters';
 import UserNav from './UserNav';
 import AddPropertyButton from './AddProperty';
 import { getUserId } from '@/utils/actions';
+import Image from 'next/image';
 
 
 const NavBar = async () => {
@@ -15,7 +16,7 @@ const NavBar = async () => {
         <div className="flex justify-between items-center">
           {/* LOGO */}
           <Link href="/">
-          Rental
+          <Image src="/logorental.png" alt='Logo' className='w-[90px] md:w-[150px]' width={1500} height={4500} quality={80} />
           {/* logo here */}
           </Link>
           {/* SEARCH FILTERS */}

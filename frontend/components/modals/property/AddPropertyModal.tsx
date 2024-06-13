@@ -14,13 +14,14 @@ import apiRequests from "@/utils/ApiService";
 import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const AddPropertyModal = () => {
   const router = useRouter();
   //
   //states
   const [currentStep, setCurrentStep] = useState(1);
-  const [errors,setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<string[]>([]);
   //first step
   const [dataCategory, setDataCategory] = useState("");
   //second step
@@ -39,6 +40,8 @@ const AddPropertyModal = () => {
   //
   const addPropertyModal = useAddPropertyModal();
 
+  const [loading, setLoading] = useState(false);
+
   //set data
   //set the property image
   const setImage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -47,43 +50,55 @@ const AddPropertyModal = () => {
       setDataImage(tempImage);
     }
   };
-  //set the category 
+  //set the category
   const setCategory = (category: string) => {
     setDataCategory(category);
   };
   //
   //submit function
-  const submitForm = async () =>{
-    
-    if(dataCategory && dataTitle && dataDescription && dataPrice && dataCountry && dataImage){
+  const submitForm = async () => {
+    if (
+      dataCategory &&
+      dataTitle &&
+      dataDescription &&
+      dataPrice &&
+      dataCountry &&
+      dataImage
+    ) {
+      setLoading(true);
       const formData = new FormData();
-      formData.append('category',dataCategory);
-      formData.append('title',dataTitle);
-      formData.append('description',dataDescription);
-      formData.append('price_per_night',dataPrice);
-      formData.append('bedrooms',dataBedrooms);
-      formData.append('bathrooms',dataBathrooms);
-      formData.append('guests',dataGuests);
-      formData.append('country',dataCountry.label);
-      formData.append('country_code',dataCountry.value);
-      formData.append('image',dataImage);
-          
-      const res = await apiRequests.post('/api/properties/create/',formData);
-      if(res.success){
+      formData.append("category", dataCategory);
+      formData.append("title", dataTitle);
+      formData.append("description", dataDescription);
+      formData.append("price_per_night", dataPrice);
+      formData.append("bedrooms", dataBedrooms);
+      formData.append("bathrooms", dataBathrooms);
+      formData.append("guests", dataGuests);
+      formData.append("country", dataCountry.label);
+      formData.append("country_code", dataCountry.value);
+      formData.append("image", dataImage);
+
+      const res = await apiRequests.post("/api/properties/create/", formData);
+      if (res.success) {
         addPropertyModal.close();
-        router.push('/');
-        toast.success("Property created successfully")
-      }
-      else{
-        const tmpErrors: string[] = Object.values(res).map((error:any)=>{
+        router.push("/?added=true");
+
+        toast.success("Property created successfully");
+        setLoading(false);
+      } else {
+        setLoading(false);
+        const tmpErrors: string[] = Object.values(res).map((error: any) => {
           return error;
-        })
+        });
         setErrors(tmpErrors);
       }
-    }else{
-      toast.error("Title, Description, Price, Country and Image fields are required")
+    } else {
+      setLoading(false);
+      toast.error(
+        "Title, Description, Price, Country and Image fields are required"
+      );
     }
-  }
+  };
   //
   //content
   const content = (
@@ -130,13 +145,12 @@ const AddPropertyModal = () => {
               />
             </div>
           </div>
-         
           <CustomButton
             label="Next"
             onClick={() => setCurrentStep(3)}
             type="button"
-        
-          /> <CustomButton
+          />{" "}
+          <CustomButton
             label="Previous"
             onClick={() => setCurrentStep(1)}
             type="button"
@@ -188,14 +202,12 @@ const AddPropertyModal = () => {
               />
             </div>
           </div>
-
-         
           <CustomButton
             label="Next"
             onClick={() => setCurrentStep(4)}
             type="button"
-         
-          /> <CustomButton
+          />{" "}
+          <CustomButton
             label="Previous"
             onClick={() => setCurrentStep(2)}
             type="button"
@@ -213,13 +225,13 @@ const AddPropertyModal = () => {
               value={dataCountry}
             />
           </div>
-          
+
           <CustomButton
             label="Next"
             onClick={() => setCurrentStep(5)}
             type="button"
-         
-          /><CustomButton
+          />
+          <CustomButton
             label="Previous"
             onClick={() => setCurrentStep(3)}
             type="button"
@@ -228,10 +240,17 @@ const AddPropertyModal = () => {
         </div>
       ) : (
         <>
-          <h2 className="text-4xl mb-6 text-center  font-semibold">Property Image</h2>
+          <h2 className="text-4xl mb-6 text-center  font-semibold">
+            Property Image
+          </h2>
           <div className="pt-3 pb-6 space-y-4">
             <div className="py-4 px-6 bg-gray-400 text-white rounded-xl">
-              <input type="file" accept="image/*" onChange={setImage} className=" font-semibold text-black"  />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={setImage}
+                className=" font-semibold text-black"
+              />
             </div>
             {dataImage && (
               <div className="w-[200px] h-[150px] relative">
@@ -244,20 +263,29 @@ const AddPropertyModal = () => {
               </div>
             )}
           </div>
-          {errors && errors.map((error,idx)=>{
-            return(
-              <div key={idx} className="p-5 mb-4 bg-red-500 text-white opacity-80">
-                {error}
-              </div>
-            )
-          })}
-          
+          {errors &&
+            errors.map((error, idx) => {
+              return (
+                <div
+                  key={idx}
+                  className="p-5 mb-4 bg-red-500 text-white opacity-80"
+                >
+                  {error}
+                </div>
+              );
+            })}
+          {loading ? (
+            <CustomButton
+              type="button"
+              label="Creating property please wait..."
+              icon={<LoadingSpinner />}
+              className="font-semibold text-xl opacity-60 pointer-events-none"
+            />
+          ) : (
+            <CustomButton label="Submit" onClick={submitForm} type="button" />
+          )}
+
           <CustomButton
-            label="Submit"
-            onClick={submitForm}
-            type="button"
-           
-          /><CustomButton
             label="Previous"
             onClick={() => setCurrentStep(4)}
             type="button"
@@ -267,7 +295,7 @@ const AddPropertyModal = () => {
       )}
     </>
   );
- 
+
   return (
     <div>
       {}

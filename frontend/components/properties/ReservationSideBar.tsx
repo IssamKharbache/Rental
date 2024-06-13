@@ -65,6 +65,7 @@ const ReservationSideBar:React.FC<ReservationSideBarProps> = ({property,userId})
       }
       }
     }else{
+      setLoading(false);
       loginModal.open();
     }
   }
@@ -79,7 +80,6 @@ const ReservationSideBar:React.FC<ReservationSideBarProps> = ({property,userId})
       });
       dates = [...dates,...range];
     })
-    
     setBookedDates(dates);
   }
   //

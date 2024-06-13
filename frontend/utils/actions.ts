@@ -2,6 +2,45 @@
 
 import { cookies } from "next/headers";
 
+export async function handleRefresh() {
+    console.log('handleRefresh');
+const refreshToken = await getRefreshToken();
+const token = await fetch('http://localhost:8000/api/auth/token/refresh',{
+    method: 'POST',
+    body: JSON.stringify({
+        refresh:refreshToken,
+        
+    }),
+    headers:{
+        'Accept': 'application/json',
+        'content-type': 'application/json'
+    }
+})
+.then(response=>response.json()).then((json)=>{
+    console.log('Responce - refresh : ',json);
+    if(json.access){
+        cookies().set('session_access_token',json.access,{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === 'production' ,
+            maxAge:60 * 60, // 1 hour
+            path:'/'
+        });
+        return json.access;
+    }else{
+        resetAuthCookies();
+    }
+})
+.catch((err)=>{
+    console.log('error',err);
+    resetAuthCookies();
+    
+})
+
+return token;
+    
+}
+
+
 
 export const handleLogin = async (userId:string,accessToken:string,refreshToken:string) =>{
 
@@ -16,7 +55,7 @@ export const handleLogin = async (userId:string,accessToken:string,refreshToken:
     cookies().set('session_access_token',accessToken,{
         httpOnly:true,
         secure:process.env.NODE_ENV === 'production' ,
-        maxAge:60 * 60 * 24 * 7, // 60 minutes
+        maxAge:60 * 60, // 1 hour
         path:'/'
     });
     cookies().set('session_refresh_token',refreshToken,{
@@ -45,6 +84,15 @@ export const getUserId = async () => {
 
 export const getAccessToken = async () => {
     let accessToken = cookies().get('session_access_token')?.value
+    if(!accessToken){
+        accessToken = await handleRefresh();
+    }
     //refresh token late;
     return accessToken ? accessToken : null;
+}
+
+export const getRefreshToken = async () => {
+    let refreshToken = cookies().get('session_refresh_token')?.value
+    //refresh token late;
+    return refreshToken;
 }
